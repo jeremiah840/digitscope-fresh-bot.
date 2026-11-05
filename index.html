@@ -4,84 +4,164 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&amp;family=Outfit:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
   <title>DigitScopeAI Dashboard</title>
   <style>
+    :root {
+      color-scheme: dark;
+      --page: #080b10;
+      --panel: #10151d;
+      --panel-raised: #151c26;
+      --border: #26313e;
+      --gold: #ffd447;
+      --green: #39d6a2;
+      --text: #edf2f7;
+      --muted: #9aa8b7;
+      --danger: #ff7777;
+    }
+
     * { box-sizing: border-box; }
 
     body {
-      margin: 0;
       min-height: 100vh;
+      margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
-      background: #090909;
-      color: #FFD700;
-      font-family: Arial, sans-serif;
+      padding: 28px 16px;
+      background:
+        radial-gradient(ellipse at 50% 0, rgba(57, 214, 162, .09), transparent 42%),
+        var(--page);
+      color: var(--text);
+      font-family: "Outfit", Arial, sans-serif;
     }
 
     .container {
-      width: 100%;
-      max-width: 520px;
+      width: min(100%, 520px);
+      padding: 30px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(160deg, rgba(21, 28, 38, .98), rgba(12, 16, 23, .98));
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .48), 0 0 36px rgba(57, 214, 162, .035);
       text-align: center;
     }
 
-    h1 { font-size: 30px; }
+    h1, h2 {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: -.025em;
+    }
 
-    p { color: #ddd; line-height: 1.6; }
+    h1 { font-size: clamp(25px, 6vw, 32px); }
+    h2 { font-size: 25px; }
+
+    p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    #welcomePage, #proceedPage, #loginPage, #dashboard {
+      padding: 8px 2px;
+    }
 
     input {
       display: block;
       width: 100%;
       margin: 14px 0;
-      padding: 14px;
-      border: 1px solid #FFD700;
-      border-radius: 8px;
-      background: #171717;
-      color: white;
-      font-size: 16px;
+      padding: 14px 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: #090d13;
+      color: var(--text);
+      font: 500 15px "IBM Plex Mono", monospace;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    input::placeholder { color: #687584; }
+    input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(57, 214, 162, .12);
     }
 
     button, .link {
       display: block;
       width: 100%;
-      margin-top: 18px;
-      padding: 18px;
-      border: 2px solid #FFD700;
+      margin-top: 14px;
+      padding: 16px 18px;
+      border: 1px solid var(--border);
       border-radius: 12px;
-      color: #FFD700;
-      background: #171717;
-      text-decoration: none;
+      background: var(--panel-raised);
+      color: var(--text);
       text-align: left;
-      font-size: 16px;
+      text-decoration: none;
+      font: 600 15px "Outfit", Arial, sans-serif;
       cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
     }
 
-    button:hover, .link:hover { background: #292400; }
+    button:hover, .link:hover {
+      transform: translateY(-1px);
+      border-color: rgba(57, 214, 162, .65);
+      background: #19232d;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+    }
 
-    .link strong { display: block; font-size: 19px; }
+    button:focus-visible, .link:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 3px;
+    }
+
+    .link {
+      padding: 18px;
+      border-left: 3px solid var(--green);
+    }
+
+    .link strong {
+      display: block;
+      color: var(--text);
+      font-size: 18px;
+    }
 
     .link span {
       display: block;
-      margin-top: 8px;
-      color: #ddd;
-      font-size: 14px;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 13px;
     }
 
     .login-button {
+      border-color: var(--green);
+      background: var(--green);
+      color: #06120f;
       text-align: center;
-      background: #FFD700;
-      color: #090909;
-      font-weight: bold;
+      font-weight: 800;
+      letter-spacing: .06em;
     }
 
-    .login-button:hover { background: #e6c200; }
+    .login-button:hover {
+      border-color: #69e8bd;
+      background: #69e8bd;
+      color: #06120f;
+    }
 
     #dashboard { display: none; }
+    .error { min-height: 24px; color: var(--danger); }
 
-    .error { color: #ff7777; }
+    footer {
+      margin-top: 24px;
+      color: #718091;
+      font: 11px "IBM Plex Mono", monospace;
+      letter-spacing: .04em;
+    }
 
-    footer { margin-top: 28px; color: #888; font-size: 12px; }
+    @media (max-width: 480px) {
+      .container { padding: 23px 18px; border-radius: 15px; }
+      button, .link { padding: 15px; }
+    }
   </style>
 </head>
 <body>
